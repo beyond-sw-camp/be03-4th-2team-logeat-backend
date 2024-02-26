@@ -51,7 +51,6 @@ public class Post extends BaseTimeEntity {
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
 	private List<Like> likes;
 
-
 	@Builder.Default
 	private int likeCount=0;
 
