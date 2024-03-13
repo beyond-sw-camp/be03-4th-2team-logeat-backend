@@ -59,7 +59,8 @@
 ## 설계서
 
 
-![backup (2)](https://github.com/beyond-sw-camp/be03-4th-2team-logeat-backend/assets/97268373/ff8a5e71-f6f3-413b-a756-83ef75c4596f)
+![최최최최종](https://github.com/beyond-sw-camp/be03-4th-2team-logeat-backend/assets/97268373/ecd04eb2-9b2a-4794-a578-d8c5662e8329)
+
 
 
 ## 상세문서
@@ -82,7 +83,9 @@
   - API 처리가 완료된 후, 응답은 사용자에게 전달됩니다.
     
 - 블루-그린 배포
-  
+
+  ![블루그린](https://github.com/beyond-sw-camp/be03-4th-2team-logeat-backend/assets/97268373/b73cf2b3-65be-4509-a05c-e72d484bdf87)
+
   - 블루/그린 배포는 소프트웨어 개발에서 사용되는 무중단 배포 방식 중 하나로, 새로운 버전의 애플리케이션을 기존 버전과 완전히 분리된 환경(그린)에 배포한 다음, 모든 것이 정상적으로 작동하는 것을 확인한 후에 트래픽을 새로운 환경으로 전환함으로써 사용자에게 서비스 중단 없이 업데이트를 제공하는 방식입니다.
 
 ## 구성스크립트
