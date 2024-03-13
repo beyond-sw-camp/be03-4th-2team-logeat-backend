@@ -84,18 +84,76 @@
   
   - 블루/그린 배포는 소프트웨어 개발에서 사용되는 무중단 배포 방식 중 하나로, 새로운 버전의 애플리케이션을 기존 버전과 완전히 분리된 환경(그린)에 배포한 다음, 모든 것이 정상적으로 작동하는 것을 확인한 후에 트래픽을 새로운 환경으로 전환함으로써 사용자에게 서비스 중단 없이 업데이트를 제공하는 방식입니다.
 
-
 ## 구성스크립트
-<details> <summary><b>구성스크립트</b></summary>   
-  <div markdown="1"> 
-  </div>
+
+<details>
+<summary><b>스크립트</b></summary>
+<div markdown="1">
+	
+```yaml
+name: Deploy to Ec2 With Docker Blue/Green
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set YML
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+          find src
+          echo "${{ secrets.JWT_YML }}" | base64 --decode > src/main/resources/jwt.yml
+          find src
+      
+      - name: Build with Gradle  
+        working-directory: ./  
+        run: |  
+          chmod +x ./gradlew  
+          ./gradlew bootJar 
+
+      - name: Build Docker image
+        working-directory: ./
+        run: |
+          docker build -t ticketpaper2/logeat-backend:blue -f Dockerfile .
+          docker build -t ticketpaper2/logeat-backend:green -f Dockerfile .
+      
+      - name: DockerHub Login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_NAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker Images to DockerHub
+        run: |
+          docker push ticketpaper2/logeat-backend:blue
+          docker push ticketpaper2/logeat-backend:green
+      - name: EC2 SSH Login and Docker run with Blue/Green Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            ./deploy.sh
+            
+            echo "Deployed $NEW_VERSION version"
+            # 이전 버전의 이미지 삭제 또는 보관 로직 추가 (선택적)
+```
+ </div>
+
 </details>
+
 
 ## 테스트 결과
-<details> <summary><b>테스트 결과</b></summary>   
+<details> <summary><b>결과</b></summary>   
   <div markdown="1"> 
   </div>
 </details>
 
-```
+
 
