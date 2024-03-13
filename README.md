@@ -87,7 +87,7 @@
 ## 구성스크립트
 
 <details>
-<summary><b>스크립트</b></summary>
+<summary><b>logeat.yml</b></summary>
 <div markdown="1">
 	
 ```yaml
@@ -143,6 +143,28 @@ jobs:
             
             echo "Deployed $NEW_VERSION version"
             # 이전 버전의 이미지 삭제 또는 보관 로직 추가 (선택적)
+```
+ </div>
+
+</details>
+<details>
+<summary><b>Dockerfile</b></summary>
+<div markdown="1">
+	
+```Dockerfile
+FROM openjdk:11 as stage1
+WORKDIR /app
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
+RUN chmod +x ./gradlew
+RUN ./gradlew bootJar
+FROM openjdk:11
+WORKDIR /app
+COPY --from=stage1 /app/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
 ```
  </div>
 
