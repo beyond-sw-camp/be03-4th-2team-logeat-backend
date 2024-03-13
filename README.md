@@ -177,45 +177,62 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
 ```sh
 IS_GREEN=$(docker ps | grep green) # 현재 실행중인 App이 blue인지 확인합니다.
 DEFAULT_CONF=" /etc/nginx/nginx.conf"
+
 if [ -z $IS_GREEN  ];then # blue라면
+
   echo "### BLUE => GREEN ###"
+
   echo "1. get green image"
+  sudo docker rmi -f ticketpaper2/logeat-backend:green
   sudo docker pull ticketpaper2/logeat-backend:green # green으로 이미지를 내려받습니다.
+
   echo "2. green container up"
   sudo docker run -d --name logeat-backend-green -p 8082:8081 ticketpaper2/logeat-backend:green # green 컨테이너 실행
+
   while [ 1 = 1 ]; do
   echo "3. green health check..."
   sleep 3
+
   REQUEST=$(curl localhost:8082/actuator/health) # green으로 request
     if [ -n "$REQUEST" ]; then # 서비스 가능하면 health check 중지
             echo "health check success"
             break ;
             fi
   done;
+
   echo "4. reload nginx"
+
   docker exec logeat_nginx cp /etc/nginx/nginx.green.conf /etc/nginx/nginx.conf
   docker exec logeat_nginx service nginx reload
+
   echo "5. blue container down"
   sudo docker stop logeat-backend-blue || true
   docker rm -f logeat-backend-blue || true
 else
   echo "### GREEN => BLUE ###"
+
   echo "1. get blue image"
+  sudo docker rmi -f ticketpaper2/logeat-backend:blue
   sudo docker pull ticketpaper2/logeat-backend:blue
+
   echo "2. blue container up"
   sudo docker run -d --name logeat-backend-blue -p 8081:8081 ticketpaper2/logeat-backend:blue
+
   while [ 1 = 1 ]; do
     echo "3. blue health check..."
     sleep 3
     REQUEST=$(curl localhost:8081/actuator/health) # blue로 request
+
     if [ -n "$REQUEST" ]; then # 서비스 가능하면 health check 중지
       echo "health check success"
       break ;
     fi
   done;
+
   echo "4. reload nginx"
   docker exec logeat_nginx cp /etc/nginx/nginx.blue.conf /etc/nginx/nginx.conf
   docker exec logeat_nginx service nginx reload
+
   echo "5. green container down"
   docker stop logeat-backend-green || true
   docker rm -f logeat-backend-green || true
