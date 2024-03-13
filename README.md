@@ -58,7 +58,8 @@
 
 ## 설계서
 
-![아키텍처](https://github.com/beyond-sw-camp/be03-4th-2team-logeat-backend/assets/97268373/137d4c71-386d-4d60-bfb8-5c3bf37c79a8)
+
+![backup (2)](https://github.com/beyond-sw-camp/be03-4th-2team-logeat-backend/assets/97268373/ff8a5e71-f6f3-413b-a756-83ef75c4596f)
 
 
 ## 상세문서
